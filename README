@@ -25,9 +25,15 @@ INSTALLATION
 
 EXAMPLE
 
+  % cat ~/.sshcrc
+  aws
+  pluto.aws.foo
+  jupiter.aws.foo
+
+
   % sshc pchuck aws "uptime ; uname -a"
 
-  Cluster 'aws' contains 42 hosts. [pchuck] executing commands.. 
+  Cluster 'aws' contains 2 hosts. [pchuck] executing commands.. 
 
   [0] pluto.aws.foo> uptime ; uname -a
     13:00:48 up 69 days, 15:35,  0 users,  load average: 0.00, 0.00, 0.00
@@ -37,9 +43,8 @@ EXAMPLE
     13:00:49 up 26 days, 14:35,  0 users,  load average: 0.82, 0.73, 0.75
     Linux jupiter.aws.foo 2.6.18-238.19.1.el5xen #1 SMP Fri Jul 15 08:57:45 
     EDT 2011 i686 i686 i386 GNU/Linux
-  ...
 
-  8s elapsed. 42 of 42 commands executed successfully.
+  2s elapsed. 2 of 2 commands executed successfully.
 
 
 #
