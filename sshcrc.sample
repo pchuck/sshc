@@ -1,0 +1,22 @@
+# $Id: .sshcrc.sample,v 1.2 2003/12/05 16:59:41 pcharles Exp $
+#
+# This is a sample .sshcrc file. Place a copy at ~/.sshcrc and 
+# add your own host and cluster names.
+#
+# Each group of hosts is preceded by the name of the cluster.
+#
+# To execute commands across a particular cluster:
+#   sshc username clustername "uptime ; uname -a"
+#
+
+# internal hosts
+internal
+host1.internal
+host2.internal
+host3.internal
+
+# external hosts
+external
+pluto.external.foo
+jupiter.external.foo
+mercury.external.foo

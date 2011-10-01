@@ -1,0 +1,58 @@
+# README - sshc
+#
+
+sshc is a perl script capable of executing commands across groups of hosts.
+
+It is meant to be simple and compact. There are no dependencies on external
+perl modules. All the code is contained in a single source file, and 
+configuration is read from a single rc file in the user's home directory.
+
+
+USAGE
+
+  % sshc
+  usage: sshc user cluster_name command
+    i.e. sshc username clustername "uname -a"
+
+
+INSTALLATION
+
+  To get started, simply place sshc in your path, copy sshcrc.sample to 
+  ~/.sshcrc, and add your cluster/host names.
+
+  That's it.
+
+
+EXAMPLE
+
+  % sshc pchuck aws "uptime ; uname -a"
+
+  Cluster 'aws' contains 42 hosts. [pchuck] executing commands.. 
+
+  [0] pluto.aws.foo> uptime ; uname -a
+    13:00:48 up 69 days, 15:35,  0 users,  load average: 0.00, 0.00, 0.00
+    Linux pluto.aws.foo 2.6.18-238.9.1.el5xen #1 SMP Tue Apr 12 19:32:47 
+    EDT 2011 i686 i686 i386 GNU/Linux
+  [1] jupiter.aws.foo> uptime ; uname -a
+    13:00:49 up 26 days, 14:35,  0 users,  load average: 0.82, 0.73, 0.75
+    Linux jupiter.aws.foo 2.6.18-238.19.1.el5xen #1 SMP Fri Jul 15 08:57:45 
+    EDT 2011 i686 i686 i386 GNU/Linux
+  ...
+
+  8s elapsed. 42 of 42 commands executed successfully.
+
+
+#
+# Copyright 2002-2011, Patrick Charles
+#
+# sshc is free software: you can redistribute it and/or modify it under the 
+# terms of the GNU General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# sshc is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with 
+# sshc. If not, see http://www.gnu.org/licenses/.

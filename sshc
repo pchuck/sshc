@@ -1,0 +1,119 @@
+#!/usr/bin/perl
+# $Id: sshc,v 1.5 2003/12/09 14:37:09 pcharles Exp $
+#
+#   Execute a command on all systems in a cluster.
+#
+# Requires that the user have a ~/.sshcrc file which contains lists of 
+# clusters and the names of hosts within each cluster.
+#
+$TRUE = 1;
+$FALSE = 0;
+$CLRC = ".sshcrc";
+$home = $ENV{"HOME"};
+$start = time();
+
+# parse the command-line arguments
+($user, $cluster, $command) = checkArgs();
+
+# load the host list for the specified cluster
+@hosts = loadHosts($home, $CLRC, $cluster);
+if($#hosts < 0) {
+    print STDERR "No hosts found under cluster name '$cluster'\n";
+    exit 2;
+}
+
+# execute the command across all hosts in the cluster
+$counter = 0;
+$success = $FALSE;
+print STDERR "Cluster '$cluster' contains ".($#hosts + 1).
+    " hosts. [$user] executing commands.. \n\n";
+foreach $host (@hosts) {
+    # print "-" x 78 . "\n";
+    print "[".($counter++)."] $host> $command\n";
+    $result = runRemote("$host", $command);
+    $success = $result == 0 ? $success + 1 : $success;
+}
+
+# evaluate the results and print the execution time
+$elapsed = time() - $start;
+print STDERR "\n".$elapsed.
+    "s elapsed. $success of $counter commands executed successfully.\n";
+
+# return success only if all of the commands successfully executed
+if($success != $counter) {
+    exit 1;
+}
+
+exit 0;
+
+
+##############################################################################
+
+# Read a list of hosts in a cluster.
+#
+# Reads the .sshcrc file, finds the specified cluster and returns 
+# an array containing the names of the hosts in the cluster.
+#
+sub loadHosts() {
+    my $home = shift;
+    my $filename = shift;
+    my $clusterName = shift;
+
+    my @hosts;
+    my $captureMode = $FALSE;
+    open(FILE, "$home/$filename") || die "Can't open file $home/$filename\n";
+    while(<FILE>) {
+	if(substr($_, 0, 1) ne "#") { # skip commented lines
+	    chop($_);
+	    if($_ eq "") {
+		$captureMode = $FALSE;
+	    }
+	    if($captureMode == $TRUE) {
+		if($_ ne "") {
+		    $hosts[$index++] = $_;
+		}
+	    }
+	    if($_ eq $clusterName) {
+		$captureMode = $TRUE;
+	    }
+	}
+    }
+
+    return @hosts
+}
+
+# Execute a command remotely.
+#
+# Using ssh, executes the specified command on the specified remote host.
+# Return whether or not the command executed successfully.
+#
+sub runRemote {
+    my $node = shift;
+    my $cmd = shift;
+
+    my $result = system("ssh -x -l $user $node \"$cmd\"");
+    $result = $result >> 8;
+
+    return $result;
+}
+
+# Check the command-line arguments.
+#
+# If the required arguments are set, return them.
+# Otherwise, provide usage information to the user.
+#
+sub checkArgs() {
+    if($#ARGV < 2) {
+	print STDERR "\nusage: sshc user cluster_name command\n";
+	print STDERR 
+	    "\ti.e. sshc username clustername \"uname -a\"\n\n";
+	exit 2;
+    }
+
+    my $user = $ARGV[0];
+    my $cluster = $ARGV[1];
+    my $command = $ARGV[2];
+
+    return ($user, $cluster, $command);
+}
+
